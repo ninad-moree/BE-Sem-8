@@ -1,65 +1,131 @@
-#include <iostream>
-//#include <vector>
-#include <omp.h>
-#include <climits>
+#include <bits/stdc++.h>
 using namespace std;
+using namespace std::chrono;
 
-void min_reduction(int arr[], int n) {
-    int min_value = INT_MAX;
-    #pragma omp parallel for reduction(min: min_value)
-
-    for (int i = 0; i < n; i++) {
-        if (arr[i] < min_value) 
-            min_value = arr[i];
+int minval_sequential(int arr[], int n)  {
+    int minval = arr[0];
+    for(int i = 0; i < n; i++) {
+        if(arr[i] < minval) 
+            minval = arr[i];
     }
-
-    cout << "Minimum value: " << min_value << endl;
+    
+    return minval;
 }
 
-void max_reduction(int arr[], int n) {
-    int max_value = INT_MIN;
-    #pragma omp parallel for reduction(max: max_value)
-
-    for (int i = 0; i < n; i++) {
-        if (arr[i] > max_value) 
-            max_value = arr[i];
+int maxval_sequential(int arr[], int n)  {
+    int maxval = arr[0];
+    for(int i = 0; i < n; i++) {
+        if(arr[i] > maxval) 
+            maxval = arr[i];
     }
-
-    cout << "Maximum value: " << max_value << endl;
+    
+    return maxval;
 }
 
-void sum_reduction(int arr[], int n) {
+int sum_sequential(int arr[], int n)  {
     int sum = 0;
-    #pragma omp parallel for reduction(+: sum)
-
-    for (int i = 0; i < n; i++) 
+    for(int i = 0; i < n; i++) 
         sum += arr[i];
     
-    cout << "Sum: " << sum << endl;
+    return sum;
 }
 
-void average_reduction(int arr[], int n) {
-    int sum = 0;
-    #pragma omp parallel for reduction(+: sum)
+double average_sequential(int arr[], int n)  {
+    return (double)sum_sequential(arr, n) / n;
+}
 
-    for (int i = 0; i < n; i++) 
+int minval_parallel(int arr[], int n)  {
+    int minval = arr[0];
+    #pragma omp parallel for reduction(min : minval)
+    for(int i = 0; i < n; i++) {
+        if(arr[i] < minval) 
+            minval = arr[i];
+    }
+    
+    return minval;
+}
+
+int maxval_parallel(int arr[], int n) 
+{
+    int maxval = arr[0];
+    #pragma omp parallel for reduction(max : maxval)
+    for(int i = 0; i < n; i++) {
+        if(arr[i] > maxval) 
+            maxval = arr[i];
+    }
+    
+    return maxval;
+}
+
+int sum_parallel(int arr[], int n)  {
+    int sum = 0;
+    #pragma omp parallel for reduction(+ : sum)
+    for(int i = 0; i < n; i++) 
         sum += arr[i];
     
-    cout << "Average: " << (double)sum / (n-1) << endl;
+    return sum;
 }
 
-int main() {
-    int *arr,n;
-    cout<<"\n enter total no of elements=>";
-    cin>>n;
-    
-    arr=new int[n];
-    cout<<"\n enter elements=>";
-    for(int i=0;i<n;i++)
-   	    cin>>arr[i];
+double average_parallel(int arr[], int n)  {
+    return (double)sum_parallel(arr, n) / n;
+}
 
-    min_reduction(arr, n);
-    max_reduction(arr, n);
-    sum_reduction(arr, n);
-    average_reduction(arr, n);
+int main()  {
+    int n;
+    cout << "Enter the number of elements: ";
+    cin >> n;
+    int arr[n];
+    cout << "Enter the elements: ";
+    for(int i = 0; i < n; i++) 
+        cin >> arr[i];
+
+    auto start = high_resolution_clock::now();
+    cout << "\nThe minimum value (sequential) is: " << minval_sequential(arr, n) << '\n';
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    cout << "Time taken by sequential minval: " << duration.count() << " microseconds" << endl;
+
+    start = high_resolution_clock::now();
+    cout << "\nThe maximum value (sequential) is: " << maxval_sequential(arr, n) << '\n';
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Time taken by sequential maxval: " << duration.count() << " microseconds" << endl;
+
+    start = high_resolution_clock::now();
+    cout << "\nThe summation (sequential) is: " << sum_sequential(arr, n) << '\n';
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Time taken by sequential sum: " << duration.count() << " microseconds" << endl;
+
+    start = high_resolution_clock::now();
+    cout << "\nThe average (sequential) is: " << average_sequential(arr, n) << '\n';
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Time taken by sequential average: " << duration.count() << " microseconds" << endl;
+
+    start = high_resolution_clock::now();
+    cout << "\nThe minimum value (parallel) is: " << minval_parallel(arr, n) << '\n';
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Time taken by parallel minval: " << duration.count() << " microseconds" << endl;
+
+    start = high_resolution_clock::now();
+    cout << "\nThe maximum value (parallel) is: " << maxval_parallel(arr, n) << '\n';
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Time taken by parallel maxval: " << duration.count() << " microseconds" << endl;
+
+    start = high_resolution_clock::now();
+    cout << "\nThe summation (parallel) is: " << sum_parallel(arr, n) << '\n';
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Time taken by parallel sum: " << duration.count() << " microseconds" << endl;
+
+    start = high_resolution_clock::now();
+    cout << "\nThe average (parallel) is: " << average_parallel(arr, n) << '\n';
+    stop = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Time taken by parallel average: " << duration.count() << " microseconds" << endl;
+
+    return 0;
 }
