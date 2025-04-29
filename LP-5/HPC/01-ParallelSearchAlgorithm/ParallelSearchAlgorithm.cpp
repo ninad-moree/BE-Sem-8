@@ -18,6 +18,11 @@ public:
         adj[v].push_back(u);
     }
 
+    // void addEdge(int v, int w) {
+    //     adj[v].push_back(w);
+    // }
+
+
     void parallelBFS(int start);
     void parallelDFS(int start);
 };
@@ -117,6 +122,13 @@ int main() {
 
     g.parallelBFS(0);
     g.parallelDFS(0);
+
+    // cout << "Enter the edges (format: vertex1 vertex2):" << endl;
+    // for (int i = 0; i < E; ++i) {
+    //     int v, w;
+    //     cin >> v >> w;
+    //     g.addEdge(v, w);
+    // }
 
     return 0;
 }
