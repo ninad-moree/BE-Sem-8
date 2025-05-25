@@ -32,8 +32,7 @@ void merge(vector<int> &arr, int l, int m, int r) {
         if (L[i] <= R[j]) {
             arr[k] = L[i];
             ++i;
-        }
-        else {
+        } else {
             arr[k] = R[j];
             ++j;
         }
@@ -90,8 +89,7 @@ void parallelMergeSort(vector<int> &arr, int l, int r) {
     }
 }
 
-int main()
-{
+int main() {
     const int size = 10000; 
     vector<int> arr(size), arr_copy(size);
 
