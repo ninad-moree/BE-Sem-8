@@ -1,6 +1,6 @@
 # BE Lab Assignments SEM-8
 
-## Semester: 7
+## Semester: 8
 
 ![Static Badge](https://img.shields.io/badge/Deep%20Learning-orange)
 ![Static Badge](https://img.shields.io/badge/High%20Performance%20Computing-green)
